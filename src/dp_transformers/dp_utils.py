@@ -192,7 +192,8 @@ class OpacusDPTrainer(Trainer):
             rdp_accountant=self.rdp_accountant,
             prv_accountant=self.prv_accountant
         )
-        super().__init__(model=model, args=args, train_dataset=train_dataset, callbacks=[self.dp_callback], **kwargs)
+        extra_callbacks = kwargs.pop("callbacks", [])
+        super().__init__(model=model, args=args, train_dataset=train_dataset, callbacks=[self.dp_callback] + extra_callbacks, **kwargs)
 
         self.get_rdp_epsilon = lambda: self.rdp_accountant.get_epsilon(self.privacy_args.target_delta)  # RDP epsilon
         self.get_prv_epsilon = lambda: self.prv_accountant.compute_epsilon(self.state.global_step)[2]
