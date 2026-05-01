@@ -78,7 +78,7 @@ class TrainingArguments(HfTrainingArguments):
             self.logging_steps = 1
             self.logging_strategy = IntervalStrategy.STEPS
             self.eval_steps = 1
-            self.evaluation_strategy = IntervalStrategy.STEPS
+            self.eval_strategy = IntervalStrategy.STEPS
 
             self.max_steps = 2
 

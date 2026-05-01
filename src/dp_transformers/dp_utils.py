@@ -96,7 +96,7 @@ class DPCallback(TrainerCallback):
 
 class DataCollatorForPrivateCausalLanguageModeling(DataCollatorForLanguageModeling):
     def __init__(self, tokenizer: PreTrainedTokenizer):
-        super().__init__(tokenizer=tokenizer, mlm=False)
+        super().__init__(processing_class=tokenizer, mlm=False)
 
     def __call__(self, examples: List[Union[List[int], torch.Tensor, Dict[str, torch.Tensor]]]) -> Dict[str, torch.Tensor]:
         batch = super().__call__(examples)
@@ -223,7 +223,7 @@ class OpacusDPTrainer(Trainer):
 
         return self.optimizer
 
-    def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]) -> torch.Tensor:
+    def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]], num_itens_in_batch=None) -> torch.Tensor:
         """
         Perform a training step on a batch of inputs.
 
@@ -258,10 +258,7 @@ class OpacusDPTrainer(Trainer):
         # that is returned in order for the logging to work correctly. Hence we scale the loss after the call to 
         # loss.backward()
 
-        if self.use_apex:
-            raise NotImplementedError("DP currently doesn't support this")
-        else:
-            loss.backward()
+        loss.backward()
 
         return loss.detach()/self.args.gradient_accumulation_steps
 
