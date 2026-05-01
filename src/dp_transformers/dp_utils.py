@@ -248,7 +248,7 @@ class OpacusDPTrainer(Trainer):
         if is_sagemaker_mp_enabled():
             raise NotImplementedError("DP currently doesn't support this")
 
-        with self.compute_loss_context_manager():
+        with torch.amp.autocast("cuda", dtype=torch.bfloat16):
             loss = self.compute_loss(model, inputs)
 
         if self.args.n_gpu > 1:
